@@ -4,7 +4,7 @@ import time
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 from pathlib import Path
-
+import datetime
 
 class FileHandler(FileSystemEventHandler):
     def on_modified(self, event):
@@ -22,21 +22,27 @@ class FileHandler(FileSystemEventHandler):
                     print(f'Tệp không thuộc để phân loại:  {file_path}')
 
 
-
+def get_current_date_folder():
+    current_date = datetime.datetime.now().strftime('%d-%m-%Y')
+    return current_date
 
 source_folder = str(Path.home()/ "Downloads")
 
-folders = {
-    'video':source_folder + '/Video',
-    'pdf': source_folder + '/PDF',
-    'image': source_folder + '/Image',
-    'document' : source_folder + '/Document',
-    'rar': source_folder + '/Winrar',
-    'exe' : source_folder + '/Exe',
-    'csv': source_folder + '/CSV'
-}
+def create_folders_by_date():
+    current_date_folder = get_current_date_folder()
+    folders = {
+        'video': os.path.join(source_folder,'Video',current_date_folder),
+        'pdf': os.path.join(source_folder,'PDF', current_date_folder),
+        'image': os.path.join(source_folder,'Image',current_date_folder),
+        'document': os.path.join(source_folder,'Document',current_date_folder ),
+        'rar': os.path.join(source_folder,'Winrar',current_date_folder),
+        'exe': os.path.join(source_folder, 'EXE',current_date_folder),
+        'csv': os.path.join(source_folder,'CSV',current_date_folder)
+    }
+    return folders
 
 def get_location_folder(filename):
+    folders = create_folders_by_date()
     ext = filename.split('.')[-1].lower()
     if ext in ['mp4','mkv','mov']:
         return folders['video']
